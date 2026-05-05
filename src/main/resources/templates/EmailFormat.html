@@ -1,0 +1,29 @@
+import jakarta.mail.internet.MimeMessage;
+import org.springframework.mail.javamail.MimeMessageHelper;
+
+@Service
+public class EmailService {
+
+    @Autowired
+    private JavaMailSender mailSender;
+
+    public void sendHtmlMail(String toEmail) throws Exception {
+
+        MimeMessage message = mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message, true);
+
+        helper.setTo(toEmail);
+        helper.setSubject("Welcome to Our App 🚀");
+
+        String html = """
+            <h2>Welcome 🎉</h2>
+            <p>Your account has been created successfully.</p>
+            <p>Enjoy using our app 😊</p>
+        """;
+
+        helper.setText(html, true); // true = HTML
+        helper.setFrom("isakkirju@gmail.com");
+
+        mailSender.send(message);
+    }
+}
