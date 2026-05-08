@@ -5,8 +5,8 @@ import java.sql.Timestamp;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -31,9 +31,16 @@ public class User {
     private String name;
     private String email;
     private String password;
-    @JsonDeserialize(using = RoleDeserializer.class)
     public enum Role {
-        client, manager, admin
+        client, manager, admin;
+
+        @JsonCreator
+        public static Role fromString(String value) {
+            if (value == null) {
+                return client; // default role
+            }
+            return Role.valueOf(value.trim().toLowerCase());
+        }
     }
 
     @Enumerated(EnumType.STRING)
